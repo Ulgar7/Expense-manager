@@ -1,0 +1,24 @@
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    gap: 8px;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+#calendar div{
+    padding: 10px;
+    text-align: center;
+    background: #eee;
+    cursor: pointer;
+    border-radius: 6px
+}
+
+#calendar div:hover{
+    background: #ddd
+}
+
+#calendar div.active-day{
+    background: #333;
+    color: white;
+}
