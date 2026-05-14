@@ -42,3 +42,9 @@ function saveExpenses () {
         JSON.stringify(expenses)
     )
 }
+
+export function getTotalByDate(date) {
+    return expenses
+        .filter( e => e.date === date)
+        .reduce((total, e) => total + e.amount, 0);
+}

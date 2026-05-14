@@ -1,4 +1,4 @@
-
+import { getTotalByDate } from "../logic/expensesService.js";
 
 export function renderCalendar(container, activeDate, onSelect){
     container.innerHTML = "";
@@ -8,7 +8,14 @@ export function renderCalendar(container, activeDate, onSelect){
         
         const date = `2026-05-${String(i).padStart(2, "0")}`;
 
+        const total = getTotalByDate(date)
+
         day.textContent = i;
+
+        day.innerHTML = `
+        <span>${i}</span>
+        <small>$${total}</small>
+        `
 
         if (date === activeDate) {
             day.classList.add("active-day")
