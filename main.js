@@ -1,6 +1,6 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate } from "./logic/expensesService.js"
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth } from "./logic/expensesService.js"
 
 
 export let visibleMonth = new Date().getMonth()
@@ -49,7 +49,14 @@ function refreshUI() {
 
     const  total = getTotalPerDate(activeDate);
 
-    totalEl.textContent = `Total del día: $${total}`
+    
+
+    const monthlyTotal = getTotalPerMonth(visibleMonth, visibleYear)
+
+    totalEl.innerHTML = `
+        <p>Total del día: $${total}</p>
+        <p>Total del mes: $${monthlyTotal}</p>
+    `
     
 }
 

@@ -48,3 +48,23 @@ export function getTotalByDate(date) {
         .filter( e => e.date === date)
         .reduce((total, e) => total + e.amount, 0);
 }
+
+export function getExpensesPerMonth(month, year) {
+    return expenses.filter(expense => {
+        const expenseDate = new Date(expense.date);
+
+        return (
+            expenseDate.getMonth() === month &&
+            expenseDate.getFullYear() === year
+        )
+    })
+}
+
+export function getTotalPerMonth(month, year) {
+    const monthExpenses = 
+        getExpensesPerMonth(month, year)
+
+        return monthExpenses.reduce((total, expense) => {
+            return total + expense.amount;
+        }, 0)
+}
