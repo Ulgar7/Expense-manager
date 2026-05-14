@@ -1,5 +1,5 @@
 import { getTotalByDate } from "../logic/expensesService.js";
-import { getDaysInMonth, formatDate, getMonthName} from "../utils/dates.js";
+import { getDaysInMonth, formatDate, getMonthName, getFirstDayOfMonth} from "../utils/dates.js";
 
 export function renderCalendar(container, activeDate,visibleMonth, visibleYear ,onSelect, onPrevMonth, onNextMonth){
     container.innerHTML = "";
@@ -24,7 +24,29 @@ export function renderCalendar(container, activeDate,visibleMonth, visibleYear ,
     
     container.appendChild(header);
 
+    const weekDays = ["D", "L", "M", "X", "J", "V", "S"];
+
+    weekDays.forEach(label => {
+        const dayLabel = document.createElement("div")
+
+        dayLabel.textContent = label;
+
+        dayLabel.classList.add("week-day-label")
+
+        container.appendChild(dayLabel)
+    })
+
     const days = getDaysInMonth(visibleYear, visibleMonth)
+
+    const firstDay = getFirstDayOfMonth(visibleYear, visibleMonth)
+
+    for(let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement("div")
+
+        emptyDay.classList.add("empty-day");
+
+        container.appendChild(emptyDay)
+    }
 
     for( let i = 1; i <= days; i++){
         const day = document.createElement("div");

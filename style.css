@@ -30,3 +30,15 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.empty-day{
+    background: transparent !important;
+    cursor: default !important;
+}
+
+.week-day-label{
+    text-align: center;
+    font-weight: bold;
+    background: transparent !important;
+    cursor: default !important;
+}

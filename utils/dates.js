@@ -18,8 +18,14 @@ export function getMonthName(month) {
         "Julio",
         "Agosto",
         "Septiembre",
+        "Octubre",
         "Noviembre",
         "Diciembre"
     ];
     return months[month]
 }
+
+export function getFirstDayOfMonth(year, month) {
+    return new Date(year, month, 1).getDay()
+}
+
