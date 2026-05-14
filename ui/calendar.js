@@ -1,12 +1,15 @@
 import { getTotalByDate } from "../logic/expensesService.js";
+import { getDaysInMonth, formatDate } from "../utils/dates.js";
 
-export function renderCalendar(container, activeDate, onSelect){
+export function renderCalendar(container, activeDate,visibleMonth, visibleYear ,onSelect){
     container.innerHTML = "";
 
-    for( let i = 1; i <= 30; i++){
+    const days = getDaysInMonth(visibleYear, visibleMonth)
+
+    for( let i = 1; i <= days; i++){
         const day = document.createElement("div");
         
-        const date = `2026-05-${String(i).padStart(2, "0")}`;
+        const date = formatDate(visibleYear, visibleMonth, i)
 
         const total = getTotalByDate(date)
 

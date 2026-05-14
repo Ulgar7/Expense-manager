@@ -3,6 +3,9 @@ import { renderAddForm, renderExpenses } from "./ui/render.js";
 import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate } from "./logic/expensesService.js"
 
 
+export let visibleMonth = new Date().getMonth()
+export let visibleYear = new Date().getFullYear();
+
 export let activeDate = new Date().toISOString().split("T")[0];
 
 const calendarEl = document.getElementById("calendar");
@@ -10,9 +13,9 @@ const listEl = document.getElementById("list-expenses");
 const totalEl = document.getElementById("total")
 
 function refreshUI() {
-    renderCalendar(calendarEl, activeDate, (newDate) => {
+    renderCalendar(calendarEl, activeDate, visibleMonth, visibleYear, (newDate) => {
         activeDate = newDate;
-        refreshUI();
+        refreshUI()
     });
 
     const dayExpenses = getExpensesPerDate(activeDate);
