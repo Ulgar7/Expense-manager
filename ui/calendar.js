@@ -1,8 +1,28 @@
 import { getTotalByDate } from "../logic/expensesService.js";
-import { getDaysInMonth, formatDate } from "../utils/dates.js";
+import { getDaysInMonth, formatDate, getMonthName} from "../utils/dates.js";
 
-export function renderCalendar(container, activeDate,visibleMonth, visibleYear ,onSelect){
+export function renderCalendar(container, activeDate,visibleMonth, visibleYear ,onSelect, onPrevMonth, onNextMonth){
     container.innerHTML = "";
+
+    const header = document.createElement("div");
+    header.classList.add("calendar-header")
+
+    const prevBtn = document.createElement("button")
+    prevBtn.textContent = "<"
+
+    const title = document.createElement("h2")
+    title.textContent = `
+    ${getMonthName(visibleMonth)} ${visibleYear}`
+
+    const nextBtn = document.createElement("button")
+    nextBtn.textContent = ">"
+
+    prevBtn.addEventListener("click", onPrevMonth)
+    nextBtn.addEventListener("click", onNextMonth)
+
+    header.append(prevBtn, title, nextBtn)
+    
+    container.appendChild(header);
 
     const days = getDaysInMonth(visibleYear, visibleMonth)
 

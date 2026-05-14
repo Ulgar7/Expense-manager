@@ -16,7 +16,30 @@ function refreshUI() {
     renderCalendar(calendarEl, activeDate, visibleMonth, visibleYear, (newDate) => {
         activeDate = newDate;
         refreshUI()
-    });
+    },
+
+    () => {
+        visibleMonth--;
+
+        if(visibleMonth < 0) {
+            visibleMonth = 11;
+            visibleYear--;
+        }
+        refreshUI()
+    },
+
+    () => {
+        visibleMonth++;
+
+        if(visibleMonth > 11) {
+            visibleMonth = 0;
+            visibleYear++
+        }
+
+        refreshUI();
+    }
+
+    );
 
     const dayExpenses = getExpensesPerDate(activeDate);
     renderExpenses(dayExpenses, listEl, (id) =>{
