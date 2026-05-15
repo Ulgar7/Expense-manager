@@ -1,6 +1,6 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth } from "./logic/expensesService.js"
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory } from "./logic/expensesService.js"
 
 
 export let visibleMonth = new Date().getMonth()
@@ -13,6 +13,13 @@ const listEl = document.getElementById("list-expenses");
 const totalEl = document.getElementById("total")
 
 function refreshUI() {
+
+    const categorySummary = 
+        getCategorySummary(visibleMonth, visibleYear);
+    
+    const topCategory = 
+        getTopCategory(visibleMonth, visibleYear)    
+
     renderCalendar(calendarEl, activeDate, visibleMonth, visibleYear, (newDate) => {
         activeDate = newDate;
         refreshUI()
@@ -57,8 +64,33 @@ function refreshUI() {
         <p>Total del día: $${total}</p>
         <p>Total del mes: $${monthlyTotal}</p>
     `
+    Object.entries(categorySummary).forEach(
+        ([category, total]) => {
+
+            const percentage = 
+            ((total / monthlyTotal) * 100)
+            .toFixed(1);
+
+            totalEl.innerHTML += `
+                <p>
+                    ${category}:
+                    $${total}
+                    (${percentage}%)
+                </p>
+            `
+        }
+    )
+
+    totalEl.innerHTML += `
+        <p>
+            Categoría dominante:
+            ${topCategory.category}
+            ($${topCategory.amount})
+        </p>
+    `
     
 }
+
 
 refreshUI();
 

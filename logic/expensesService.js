@@ -68,3 +68,41 @@ export function getTotalPerMonth(month, year) {
             return total + expense.amount;
         }, 0)
 }
+
+export function getCategorySummary(month, year){
+    const monthExpenses = 
+        getExpensesPerMonth(month, year);
+
+    const summary = {}
+    
+    monthExpenses.forEach(expense => {
+        const category = expense.category;
+
+        if(!summary[category]) {
+            summary[category] = 0;
+        }
+
+        summary[category] += expense.amount
+    });
+
+    return summary;
+}
+
+export function getTopCategory(month, year) {
+    const summary = getCategorySummary(month, year);
+
+    let topCategory = null
+    let topAmount = 0
+
+    for ( const category in summary) {
+        if (summary[category] > topAmount) {
+            topAmount = summary[category]
+            topCategory = category
+        }
+    }
+
+    return { 
+        category: topCategory,
+        amount: topAmount
+    };
+}
