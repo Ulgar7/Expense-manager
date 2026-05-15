@@ -1,6 +1,6 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory } from "./logic/expensesService.js"
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
 
 
 export let visibleMonth = new Date().getMonth()
@@ -18,7 +18,13 @@ function refreshUI() {
         getCategorySummary(visibleMonth, visibleYear);
     
     const topCategory = 
-        getTopCategory(visibleMonth, visibleYear)    
+        getTopCategory(visibleMonth, visibleYear);    
+
+    const highestExpense = 
+        getHighestExpense(visibleMonth, visibleYear);
+
+    const dailyAverage =
+        getDailyAverage(visibleMonth, visibleYear);    
 
     renderCalendar(calendarEl, activeDate, visibleMonth, visibleYear, (newDate) => {
         activeDate = newDate;
@@ -88,6 +94,24 @@ function refreshUI() {
             ($${topCategory.amount})
         </p>
     `
+
+    if(highestExpense){
+        totalEl.innerHTML += `
+        <p>
+            Gasto más alto:
+            ${highestExpense.type}
+            ($${highestExpense.amount})
+        </p>
+    `
+    }
+
+    totalEl.innerHTML += `
+        <p>
+            Promedio diario:
+            $${dailyAverage}
+        </p>
+    `
+    
     
 }
 

@@ -106,3 +106,41 @@ export function getTopCategory(month, year) {
         amount: topAmount
     };
 }
+
+export function getHighestExpense(month, year) {
+    const monthExpenses = getExpensesPerMonth(month,year);
+
+    if(monthExpenses.length === 0) {
+        return null;
+    }
+
+    let highestExpense = monthExpenses[0];
+
+    monthExpenses.forEach(expense => {
+        if(expense.amount > highestExpense.amount) {
+            highestExpense = expense;
+        }
+    });
+
+    return highestExpense;
+}
+
+export function getDailyAverage(month,year) {
+    const monthExpenses = 
+        getExpensesPerMonth(month, year);
+
+    if(monthExpenses.length === 0) {
+        return 0;
+    }
+    
+    const total = 
+        getTotalPerMonth(month, year);
+
+        const uniqueDays = new  Set(
+            monthExpenses.map(expense => expense.date)
+        );
+
+        return Math.round(
+            total / uniqueDays.size
+        )
+}
