@@ -2,8 +2,56 @@ import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
 import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
 import { renderSummary } from "./ui/renderSummary.js";
+import { renderCharts } from "./ui/charts.js";
 
-export let visibleMonth = new Date().getMonth()
+let currentSection = "home";
+
+const homeSection = document.getElementById("home-section");
+const statisticsSection = document.getElementById("statistics-section");
+const summariesSection = document.getElementById("summaries-section");
+
+const btnHome = document.getElementById("btn-home");
+const btnStatistics = document.getElementById("btn-statistics");
+const btnSummaries = document.getElementById("btn-summaries");
+
+const chartsEl = document.getElementById("charts");
+
+function renderSections() {
+
+    homeSection.style.display = 
+        currentSection === "home"
+        ? "block"
+        : "none";
+
+    statisticsSection.style.display = 
+        currentSection === "statistics"
+        ? "block"
+        : "none";
+
+    summariesSection.style.display =
+        currentSection === "summaries"
+        ? "block"
+        : "none";
+}
+
+btnHome.addEventListener("click", () => {
+    currentSection = "home"
+    renderSections();
+});
+
+btnStatistics.addEventListener("click", () => {
+    currentSection = "statistics";
+    renderSections();
+});
+
+btnSummaries.addEventListener("click", () => {
+    currentSection = "summaries"
+    renderSections();
+})
+
+
+
+export let visibleMonth = new Date().getMonth();
 export let visibleYear = new Date().getFullYear();
 
 export let activeDate = new Date().toISOString().split("T")[0];
@@ -74,7 +122,10 @@ function refreshUI() {
         highestExpense,
         dailyAverage
     });
+
+    renderCharts(chartsEl, categorySummary, monthlyTotal);
     
+    renderSections();
 }
 
 
