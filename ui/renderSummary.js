@@ -55,3 +55,59 @@ export function renderSummary(container, data) {
         </p>
     `
 }
+
+export function renderSummaryNavigation(container, currentView, onChange) {
+
+    const views = [
+        "weekly",
+        "monthly",
+        "yearly", 
+        "comparison",
+        "history"
+    ]
+
+    container.innerHTML = "";
+
+    views.forEach( view => {
+
+        const btn = document.createElement("button");
+
+        btn.textContent = view;
+
+        btn.addEventListener("click", () => {
+            onChange(view)
+            console.log(view)
+        }
+    )
+
+    container.appendChild(btn)
+
+    })
+}
+
+export function renderSummaryView(container, currentView, renderMonthly) {
+    container.innerHTML = ""
+
+    if(currentView === "monthly") {
+
+        container.innerHTML = `
+            <h2>Resumen</h2>
+
+            <div id="total"></div>
+        `
+
+        const totalEl = container.querySelector("#total")
+
+        renderMonthly(totalEl)
+
+        return;
+        
+    }
+
+    container.innerHTML = `
+        <h2>
+            ${currentView}
+            summary
+        </h2>
+    `
+}

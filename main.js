@@ -1,14 +1,19 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
 import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
-import { renderSummary } from "./ui/renderSummary.js";
+import { renderSummary, renderSummaryNavigation, renderSummaryView } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
 
 let currentSection = "home";
+let currentSummaryView = "weekly";
 
 const homeSection = document.getElementById("home-section");
 const statisticsSection = document.getElementById("statistics-section");
 const summariesSection = document.getElementById("summaries-section");
+
+const summariesNav = document.getElementById("summaries-navigation");
+const summariesEl = document.getElementById("summary")
+
 
 const btnHome = document.getElementById("btn-home");
 const btnStatistics = document.getElementById("btn-statistics");
@@ -113,15 +118,31 @@ function refreshUI() {
     
 
     const monthlyTotal = getTotalPerMonth(visibleMonth, visibleYear)
+
+    renderSummaryNavigation(summariesNav, currentSummaryView, (newView) => {
+        currentSummaryView = newView;
+
+        refreshUI()
+    })
     
-    renderSummary(totalEl, {
-        total,
-        monthlyTotal,
-        categorySummary,
-        topCategory,
-        highestExpense,
-        dailyAverage
-    });
+    // renderSummary(totalEl, {
+    //     total,
+    //     monthlyTotal,
+    //     categorySummary,
+    //     topCategory,
+    //     highestExpense,
+    //     dailyAverage
+    // });
+    renderSummaryView(summariesEl, currentSummaryView, (container) => {
+        renderSummary(container, {
+            total,
+            monthlyTotal,
+            categorySummary,
+            topCategory,
+            highestExpense,
+            dailyAverage
+        })
+    })
 
     renderCharts(chartsEl, categorySummary, monthlyTotal);
     
@@ -173,3 +194,5 @@ function renderForm() {
 }
 
 renderAddButton()
+
+
