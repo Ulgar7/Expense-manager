@@ -1,5 +1,6 @@
 import { expenses } from "../data/expenses.js";
 import { expenseTypes } from "../data/expensesType.js";
+import { getWeekOfMonth } from "../utils/dates.js";
 
 export function getExpensesPerDate(date) {
     return expenses.filter(e => e.date === date);
@@ -143,4 +144,34 @@ export function getDailyAverage(month,year) {
         return Math.round(
             total / uniqueDays.size
         )
+}
+
+export function getWeeklySummary(month, year) {
+    const monthExpenses = getExpensesPerMonth(month, year)
+
+    const weeks = {};
+
+    monthExpenses.forEach( expense => {
+        const date = new Date(expense.date);
+
+        const week = getWeekOfMonth(date);
+
+        if(!weeks[week]) {
+            weeks[week] = {
+                total:0,
+                expenses:[]
+            };
+        }
+        weeks[week]
+        .total
+        +=
+        expense.amount;
+
+        weeks[week]
+        .expenses
+        .push(expense);
+    })
+
+    return weeks;
+
 }

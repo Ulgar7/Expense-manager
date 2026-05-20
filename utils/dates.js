@@ -29,3 +29,15 @@ export function getFirstDayOfMonth(year, month) {
     return new Date(year, month, 1).getDay()
 }
 
+export function getWeekOfMonth(date) {
+    const firstDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        1
+    )
+    
+    const offset = firstDay.getDay();
+
+    return Math.ceil((date.getDate() + offset) / 7)
+    
+}

@@ -3,6 +3,7 @@ import { renderAddForm, renderExpenses } from "./ui/render.js";
 import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
 import { renderSummary, renderSummaryNavigation, renderSummaryView } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
+import { getWeeklySummary } from "./logic/expensesService.js";
 
 let currentSection = "home";
 let currentSummaryView = "weekly";
@@ -119,20 +120,19 @@ function refreshUI() {
 
     const monthlyTotal = getTotalPerMonth(visibleMonth, visibleYear)
 
+    console.log(getWeeklySummary(
+        visibleMonth,
+        visibleYear
+    ))
+
+   
+
     renderSummaryNavigation(summariesNav, currentSummaryView, (newView) => {
         currentSummaryView = newView;
 
         refreshUI()
     })
     
-    // renderSummary(totalEl, {
-    //     total,
-    //     monthlyTotal,
-    //     categorySummary,
-    //     topCategory,
-    //     highestExpense,
-    //     dailyAverage
-    // });
     renderSummaryView(summariesEl, currentSummaryView, (container) => {
         renderSummary(container, {
             total,
