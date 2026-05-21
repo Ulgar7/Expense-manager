@@ -1,7 +1,7 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
 import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
-import { renderSummary, renderSummaryNavigation, renderSummaryView } from "./ui/renderSummary.js";
+import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
 import { getWeeklySummary } from "./logic/expensesService.js";
 
@@ -21,6 +21,8 @@ const btnStatistics = document.getElementById("btn-statistics");
 const btnSummaries = document.getElementById("btn-summaries");
 
 const chartsEl = document.getElementById("charts");
+
+
 
 function renderSections() {
 
@@ -125,13 +127,15 @@ function refreshUI() {
         visibleYear
     ))
 
-   
+
 
     renderSummaryNavigation(summariesNav, currentSummaryView, (newView) => {
         currentSummaryView = newView;
 
         refreshUI()
     })
+    
+    const weeklySummary = getWeeklySummary(visibleMonth, visibleYear);
     
     renderSummaryView(summariesEl, currentSummaryView, (container) => {
         renderSummary(container, {
@@ -141,8 +145,14 @@ function refreshUI() {
             topCategory,
             highestExpense,
             dailyAverage
-        })
-    })
+        });
+
+    },
+    
+    (container) => {
+        renderWeeklySummary(container,weeklySummary);
+    }
+    )
 
     renderCharts(chartsEl, categorySummary, monthlyTotal);
     

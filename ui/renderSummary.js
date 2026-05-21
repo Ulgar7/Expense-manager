@@ -85,7 +85,7 @@ export function renderSummaryNavigation(container, currentView, onChange) {
     })
 }
 
-export function renderSummaryView(container, currentView, renderMonthly) {
+export function renderSummaryView(container, currentView, renderMonthly, renderWeekly) {
     container.innerHTML = ""
 
     if(currentView === "monthly") {
@@ -104,6 +104,20 @@ export function renderSummaryView(container, currentView, renderMonthly) {
         
     }
 
+    if(currentView === "weekly") {
+                container.innerHTML = `
+                    <div id="weekly-summary">
+    
+                    </div>
+                `;
+    
+                const weeklyEl = container.querySelector("#weekly-summary");
+    
+                renderWeekly(weeklyEl);
+    
+                return;
+            }
+
     container.innerHTML = `
         <h2>
             ${currentView}
@@ -111,3 +125,30 @@ export function renderSummaryView(container, currentView, renderMonthly) {
         </h2>
     `
 }
+
+export function renderWeeklySummary(container, weeklyData){
+
+    container.innerHTML = `
+        <h2>
+            Weekly Summary
+        </h2>
+    `
+
+    Object.entries(weeklyData).forEach(([week,data]) => {
+
+        const section = document.createElement("div")
+
+        section.innerHTML = `
+            <h3>
+                Week ${week}
+            </h3>
+
+            <p>
+                Total:
+                $${data.total}
+            </p>
+        `;
+
+        container.appendChild(section);
+    });
+};

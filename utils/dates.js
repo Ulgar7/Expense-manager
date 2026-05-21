@@ -29,15 +29,40 @@ export function getFirstDayOfMonth(year, month) {
     return new Date(year, month, 1).getDay()
 }
 
-export function getWeekOfMonth(date) {
-    const firstDay = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        1
-    )
-    
-    const offset = firstDay.getDay();
+export function getWeeksRanges(year, month) {
+    const weeks = [];
 
-    return Math.ceil((date.getDate() + offset) / 7)
-    
+    const lastDay = new Date(year, month + 1, 0);
+
+    let start = new Date(year,month, 1);
+
+    while(start <= lastDay) {
+        let end = new Date(start);
+
+        if(weeks.length === 0) {
+            while(end.getDay() !== 0 && end < lastDay){
+                end.setDate(end.getDate()+1);
+            }
+        }
+
+        else{
+            end.setDate(start.getDate()+6);
+
+            if(end > lastDay) {
+                end = new Date(lastDay);
+            }
+        }
+        weeks.push({
+            start: new Date(start),
+            
+            end: new Date(end)
+        });
+
+        start = new Date(end);
+
+        start.setDate(start.getDate()+1);
+    }
+    return weeks
+
 }
+
