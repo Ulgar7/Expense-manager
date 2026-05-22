@@ -1,3 +1,12 @@
+function formatDate(date) {
+
+    return date.toLocaleDateString("es-AR", {
+        day:"numeric",
+        month:"short"
+    }
+    );
+}
+
 export function renderSummary(container, data) {
     const {
         total,
@@ -138,17 +147,59 @@ export function renderWeeklySummary(container, weeklyData){
 
         const section = document.createElement("div")
 
-        section.innerHTML = `
-            <h3>
-                Week ${week}
-            </h3>
+        const header = document.createElement("button");
 
-            <p>
-                Total:
-                $${data.total}
-            </p>
-        `;
+        header.textContent = `
+            ▶ Week ${week}
+            (${data.expenses.length});
+        `
 
-        container.appendChild(section);
+        const total = document.createElement("p")
+
+        total.textContent = `
+            Total: $${data.total}
+        `
+
+        const range = document.createElement("p");
+
+        range.textContent = `
+            ${formatDate(data.start)}
+            →
+            ${formatDate(data.end)}
+        `
+
+        const details = document.createElement("div");
+        details.style.display = "none";
+
+        data.expenses.forEach(expense=>{
+            const row = document.createElement("p")
+
+            row.textContent= `
+                ${expense.type} - $${expense.amount};
+            `
+
+            details.appendChild(row)
+
+        })
+        header.addEventListener("click", ()=> {
+                const open = details.style.display === "block";
+
+                details.style.display = open
+                ? "none" : "block"
+
+                header.textContent = open ?
+
+                `
+                    ▶ Week ${week}`
+
+                    :
+
+                `    ▼ Week ${week}
+                `
+            })
+
+        section.append(range ,header,total, details);
+
+        container.appendChild(section)
     });
 };

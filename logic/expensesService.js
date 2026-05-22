@@ -167,7 +167,9 @@ export function getWeeklySummary(month,year) {
             total: weekExpenses.reduce((sum, expense)=> 
             sum + expense.amount, 0),
             
-            expenses: weekExpenses
+            expenses: weekExpenses, 
+            start: range.start, 
+            end: range.end
         };
     });
     return weeklySummary;
