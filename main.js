@@ -1,9 +1,9 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getTopCategory, getHighestExpense, getDailyAverage } from "./logic/expensesService.js"
-import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary } from "./ui/renderSummary.js";
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getWeeklySummary, getTopCategory, getHighestExpense, getDailyAverage, getHighestWeek, getMonthlyHistory } from "./logic/expensesService.js"
+import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary, renderHistorySummary } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
-import { getWeeklySummary } from "./logic/expensesService.js";
+
 
 let currentSection = "home";
 let currentSummaryView = "weekly";
@@ -82,6 +82,12 @@ function refreshUI() {
     const dailyAverage =
         getDailyAverage(visibleMonth, visibleYear);    
 
+    const highestWeek = getHighestWeek(visibleMonth, visibleYear);
+
+    const history = getMonthlyHistory(visibleMonth, visibleYear);
+
+    console.log(history)
+
     renderCalendar(calendarEl, activeDate, visibleMonth, visibleYear, (newDate) => {
         activeDate = newDate;
         refreshUI()
@@ -122,10 +128,7 @@ function refreshUI() {
 
     const monthlyTotal = getTotalPerMonth(visibleMonth, visibleYear)
 
-    console.log(getWeeklySummary(
-        visibleMonth,
-        visibleYear
-    ))
+    
 
 
 
@@ -144,13 +147,18 @@ function refreshUI() {
             categorySummary,
             topCategory,
             highestExpense,
-            dailyAverage
+            dailyAverage,
+            highestWeek
         });
 
     },
     
     (container) => {
         renderWeeklySummary(container,weeklySummary);
+    },
+
+    (container) => {
+        renderHistorySummary(container, history);
     }
     )
 

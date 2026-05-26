@@ -9,60 +9,98 @@ function formatDate(date) {
 
 export function renderSummary(container, data) {
     const {
-        total,
         monthlyTotal,
         categorySummary,
         topCategory,
         highestExpense,
-        dailyAverage
+        dailyAverage, 
+        highestWeek
     } = data
 
     container.innerHTML = `
-        <p>Total del día: $${total}</p>
         <p>Total del mes: $${monthlyTotal}</p>
     `
 
-    Object.entries(categorySummary).forEach(
-        ([category, total]) => {
+    
 
-            const percentage = 
-            ((total / monthlyTotal) * 100)
-            .toFixed(1)
+    const  categoriesBtn = document.createElement("button");
+    categoriesBtn.textContent = "▶ Categories";
 
-            container.innerHTML += `
-                <p>
-                    ${category}:
-                    $${total}
-                    (${percentage}%)
-                </p>
-            `
-        }
-    )
+    const categories = document.createElement("div");
+    categories.style.display = "none";
 
-    container.innerHTML += `
-        <p>
-            Categoría dominante:
-            ${topCategory.category}
-            ($${topCategory.amount})
-        </p>
-    `
+    Object.entries(categorySummary).forEach(([category,total]) =>{
+
+        const percentage = ((total/monthlyTotal) * 100).toFixed(1);
+
+        const row = document.createElement("p");
+        row.textContent= `
+            ${category}
+            :
+            $${total}
+            (${percentage}%)
+        `;
+
+        categories.appendChild(row);
+    });
+
+    categoriesBtn.addEventListener("click", ()=> {
+
+        const open = categories.style.display === "block";
+
+        categories.style.display = open ? "none" : "block";
+
+        categoriesBtn.textContent = open ? "▶ Categories" : "▼ Categories";
+    });
+
+    container.append(categoriesBtn, categories)
+
+
+
+    const dominant = document.createElement("p");
+
+    dominant.textContent = `
+        Categoria dominante:
+        ${topCategory.category}
+        ($${topCategory.amount})
+    `;
+
+    container.appendChild(dominant)
 
     if(highestExpense) {
-        container.innerHTML += `
-        <p>
+        const highest = document.createElement("p");
+        highest.textContent = `
             Gasto más alto:
             ${highestExpense.type}
             ($${highestExpense.amount})
-        </p>    
-        `
+        `;
+        container.appendChild(highest)
     }
 
-    container.innerHTML += `
-        <p>
-            Promedio diario:
-            $${dailyAverage}
-        </p>
-    `
+
+    const average = document.createElement("p");
+    average.textContent = `
+        Promedio diario:
+        $${dailyAverage}
+    `;
+
+    container.appendChild(average)
+
+    if(highestWeek){
+
+        const week = document.createElement("p");
+        week.textContent = `
+            Semana más cara:
+
+            Week
+            ${highestWeek.week}
+
+            (${highestWeek.total})
+        `;
+
+        container.appendChild(week);
+    }
+
 }
 
 export function renderSummaryNavigation(container, currentView, onChange) {
@@ -85,7 +123,6 @@ export function renderSummaryNavigation(container, currentView, onChange) {
 
         btn.addEventListener("click", () => {
             onChange(view)
-            console.log(view)
         }
     )
 
@@ -94,7 +131,7 @@ export function renderSummaryNavigation(container, currentView, onChange) {
     })
 }
 
-export function renderSummaryView(container, currentView, renderMonthly, renderWeekly) {
+export function renderSummaryView(container, currentView, renderMonthly, renderWeekly, renderHistory) {
     container.innerHTML = ""
 
     if(currentView === "monthly") {
@@ -126,6 +163,20 @@ export function renderSummaryView(container, currentView, renderMonthly, renderW
     
                 return;
             }
+
+    if(currentView === "history") {
+
+        container.innerHTML = `
+            <div id="history-summary">
+            </div>
+        `;
+
+        const historyEl = container.querySelector("#history-summary");
+
+        renderHistory(historyEl);
+
+        return;
+    }
 
     container.innerHTML = `
         <h2>
@@ -203,3 +254,74 @@ export function renderWeeklySummary(container, weeklyData){
         container.appendChild(section)
     });
 };
+
+export function renderHistorySummary(container, historyData) {
+    container.innerHTML = `
+        <h2>
+        History
+        </h2>
+    `;
+
+    Object.entries(historyData) .reverse()
+    .forEach(([date, data])=>{
+
+        const section = document.createElement("div");
+
+        const header = document.createElement("button");
+
+        header.textContent = `
+            ▶ ${formatDate(new Date(date))}
+            (${data.expenses.length})
+        `;
+        
+        const total = document.createElement("p");
+
+        total.textContent = `
+            Total: $${data.total}
+        `;
+
+        const details = document.createElement("div");
+
+        details.style.display = "none";
+
+        data.expenses.forEach(expense=>{
+            const row = document.createElement("p");
+
+            row.textContent = `
+                ${expense.type}
+                - $${expense.amount}
+            `;
+
+            details.appendChild(row);
+        });
+
+        header.addEventListener("click", ()=>{
+            const open = details.style.display === "block";
+
+            details.style.display = open
+            ?
+            "none"
+            : 
+            "block";
+
+            header.textContent = open
+            ?
+
+            `
+                ▶ ${date}
+                (${data.expenses.length})
+            `
+            :
+
+            `
+                ▼ ${date}
+                (${data.expenses.length})
+            `;
+        }
+    );
+
+    section.append(header,total,details);
+
+    container.appendChild(section)
+    });
+}

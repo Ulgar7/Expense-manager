@@ -174,3 +174,37 @@ export function getWeeklySummary(month,year) {
     });
     return weeklySummary;
 }
+
+export function getHighestWeek(month, year) {
+
+    const weekly = getWeeklySummary(month,year);
+
+    let highest = null;
+
+    Object.entries(weekly).forEach(([week,data])=>{
+        if(!highest || data.total > highest.total) {
+            highest = {
+                week,
+                total:
+                data.total
+            };
+        }
+    }
+);
+return highest;
+}
+
+export function getMonthlyHistory(month, year) {
+    const monthExpenses = getExpensesPerMonth(month,year);
+
+    const history  = {};
+
+    monthExpenses.forEach(expense=>{
+        if(!history[expense.date]){
+            history[expense.date]={total:0, expenses:[]}
+        };
+        history[expense.date].total += expense.amount;
+        history[expense.date].expenses.push(expense);
+    });
+    return history;
+}
