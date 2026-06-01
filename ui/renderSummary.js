@@ -1,3 +1,5 @@
+import { renderMonthYearPicker} from "./monthYearPicker.js"
+
 function formatDate(date) {
 
     return date.toLocaleDateString("es-AR", {
@@ -131,7 +133,7 @@ export function renderSummaryNavigation(container, currentView, onChange) {
     })
 }
 
-export function renderSummaryView(container, currentView, renderMonthly, renderWeekly, renderHistory) {
+export function renderSummaryView(container, currentView, renderMonthly, renderWeekly, renderHistory, renderComparison) {
     container.innerHTML = ""
 
     if(currentView === "monthly") {
@@ -174,6 +176,20 @@ export function renderSummaryView(container, currentView, renderMonthly, renderW
         const historyEl = container.querySelector("#history-summary");
 
         renderHistory(historyEl);
+
+        return;
+    }
+
+    if(currentView === "comparison") {
+
+        container.innerHTML = `
+            <div id="comparison-summary">
+            </div>
+        `;
+
+        const comparisonEl = container.querySelector("#comparison-summary");
+
+        renderComparison(comparisonEl);
 
         return;
     }
@@ -324,4 +340,95 @@ export function renderHistorySummary(container, historyData) {
 
     container.appendChild(section)
     });
+}
+
+export function renderComparisonSummary(container, comparisonA, comparisonB, comparisonData, onChangeA, onChangeB) {
+
+    container.innerHTML = `
+        <h2>
+        Comparison
+        </h2>
+
+        <div id="comparison-controls">
+
+        <div id="month-a">
+        
+        </div>
+
+        <p>
+        VS
+        </p>
+
+        <div id="month-b">
+
+        </div>
+
+        </div>
+
+        <section id="comparison-results">
+        
+        <p>
+        Select months to compare
+        </p>
+        
+        </section>
+    `;
+
+    const monthAEL = container.querySelector("#month-a");
+
+    const monthBEL = container.querySelector("#month-b");
+
+    renderMonthYearPicker(monthAEL, comparisonA.month, comparisonA.year, onChangeA);
+
+    renderMonthYearPicker(monthBEL, comparisonB.month, comparisonB.year, onChangeB)
+    
+    const results = container.querySelector("#comparison-results");
+
+    results.innerHTML = "";
+
+    comparisonData.categories.forEach(item=>{
+        const row = document.createElement("p");
+
+        row.textContent = `
+            ${item.category}
+            
+            |
+
+            ${item.amountA}
+
+            |
+
+            ${item.amountB}
+
+            |
+
+            ${item.difference}
+        `;
+
+        results.appendChild(row);
+    });
+
+    const totals = document.createElement("div");
+
+    totals.innerHTML = `
+        <p>
+        Total A:
+
+        $${comparisonData.totalA}
+        </p>
+
+        <p>
+        Total B:
+
+        $${comparisonData.totalB}
+        </p>
+
+        <p>
+        Difference:
+        $${comparisonData.totalDifference}
+        </p>
+    `;
+
+    results.appendChild(totals);
+
 }

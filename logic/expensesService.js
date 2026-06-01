@@ -208,3 +208,50 @@ export function getMonthlyHistory(month, year) {
     });
     return history;
 }
+
+export function getComparisonData(monthA, yearA, monthB, yearB) {
+
+    const categoriesA = getCategorySummary(monthA, yearA);
+
+    const categoriesB = getCategorySummary(monthB, yearB);
+
+    const allCategories = new Set([...Object.keys(categoriesA), 
+        ...Object.keys(categoriesB)
+    ]);
+
+    const comparison = [];
+
+    allCategories.forEach(category=>{
+        
+        const amountA  = categoriesA[category] || 0;
+
+        const  amountB = categoriesB[category] || 0;
+
+        comparison.push({
+            category,
+            amountA,
+            amountB,
+            difference:
+
+            amountA
+            -
+            amountB
+        });
+    });
+
+    const totalA = getTotalPerMonth(monthA, yearA);
+
+    const totalB = getTotalPerMonth(monthB, yearB);
+
+    return{
+        categories: comparison,
+
+        totalA,
+
+        totalB, 
+
+        totalDifference:
+
+        totalA-totalB
+    };
+}

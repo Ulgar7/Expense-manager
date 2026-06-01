@@ -1,12 +1,15 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getWeeklySummary, getTopCategory, getHighestExpense, getDailyAverage, getHighestWeek, getMonthlyHistory } from "./logic/expensesService.js"
-import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary, renderHistorySummary } from "./ui/renderSummary.js";
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getWeeklySummary, getTopCategory, getHighestExpense, getDailyAverage, getHighestWeek, getMonthlyHistory, getComparisonData } from "./logic/expensesService.js"
+import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary, renderHistorySummary, renderComparisonSummary } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
+import { renderMonthYearPicker } from "./ui/monthYearPicker.js";
 
 
 let currentSection = "home";
 let currentSummaryView = "weekly";
+
+
 
 const homeSection = document.getElementById("home-section");
 const statisticsSection = document.getElementById("statistics-section");
@@ -68,6 +71,29 @@ const calendarEl = document.getElementById("calendar");
 const listEl = document.getElementById("list-expenses");
 const totalEl = document.getElementById("total")
 
+let comparisonA = { 
+
+    month: visibleMonth,
+
+    year: visibleYear
+};
+
+let comparisonB = {
+
+    month: visibleMonth===0
+    ?
+    11
+    :
+    visibleMonth-1,
+
+    year:
+    visibleMonth===0
+    ?
+    visibleYear-1
+    :
+    visibleYear
+}
+
 function refreshUI() {
 
     const categorySummary = 
@@ -85,6 +111,16 @@ function refreshUI() {
     const highestWeek = getHighestWeek(visibleMonth, visibleYear);
 
     const history = getMonthlyHistory(visibleMonth, visibleYear);
+
+    const comparisonData = getComparisonData(
+
+        comparisonA.month,
+        comparisonA.year,
+
+        comparisonB.month,
+        comparisonB.year
+    );
+    
 
     console.log(history)
 
@@ -159,6 +195,20 @@ function refreshUI() {
 
     (container) => {
         renderHistorySummary(container, history);
+    },
+    (container) => {
+        renderComparisonSummary(container, comparisonA, comparisonB, comparisonData, (newValue)=>{
+            comparisonA = newValue;
+
+            refreshUI();
+        },
+
+        (newValue)=>{
+            comparisonB = newValue;
+
+            refreshUI()
+        }
+    );
     }
     )
 
@@ -210,6 +260,8 @@ function renderForm() {
         }
     )
 }
+
+
 
 renderAddButton()
 
