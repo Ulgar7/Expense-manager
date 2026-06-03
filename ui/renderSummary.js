@@ -1,3 +1,4 @@
+import { getMonthName } from "../utils/dates.js";
 import { renderMonthYearPicker} from "./monthYearPicker.js"
 
 function formatDate(date) {
@@ -386,49 +387,100 @@ export function renderComparisonSummary(container, comparisonA, comparisonB, com
 
     results.innerHTML = "";
 
-    comparisonData.categories.forEach(item=>{
-        const row = document.createElement("p");
+    
+        const table = document.createElement("table");
 
-        row.textContent = `
-            ${item.category}
+        table.innerHTML = `
+            <tr>
             
-            |
+            <th>
+            Category
+            </th>
 
-            ${item.amountA}
+            <th>
+            ${getMonthName(comparisonA.month)}
+            </th>
 
-            |
+            <th>
+            ${getMonthName(comparisonB.month)}
+            </th>
 
-            ${item.amountB}
+            <th>
+            Difference
+            </th>
 
-            |
+            </tr>
+        `
 
-            ${item.difference}
-        `;
+        comparisonData.categories.forEach(item=>{
+            const row = document.createElement("tr");
 
-        results.appendChild(row);
-    });
+            row.innerHTML = `
+                <td>
+                ${item.category}
+                </td>
 
-    const totals = document.createElement("div");
+                <td>
+                $${item.amountA}
+                </td>
 
-    totals.innerHTML = `
-        <p>
-        Total A:
+                <td>
+                $${item.amountB}
+                </td>
 
-        $${comparisonData.totalA}
-        </p>
+                <td>
+                $${item.difference}
+                </td>
+            `;
 
-        <p>
-        Total B:
+            table.appendChild(row)
+        })
+        
 
-        $${comparisonData.totalB}
-        </p>
+        results.appendChild(table);
 
-        <p>
+
+
+    const totalsTable = document.createElement("table");
+
+    totalsTable.innerHTML = `
+        <tr>
+        
+        <th>
+        ${getMonthName(comparisonA.month)}
+        ${comparisonA.year}
+        </th>
+
+        <th>
+        ${getMonthName(comparisonB.month)}
+        ${comparisonB.year}
+        </th>
+
+        <th>
         Difference:
-        $${comparisonData.totalDifference}
-        </p>
+        </th>
+
+        </tr>
     `;
 
-    results.appendChild(totals);
+    const totalRow = document.createElement("tr");
+
+    totalRow.innerHTML = `
+        <td>
+        $${comparisonData.totalA}
+        </td>
+
+        <td>
+        $${comparisonData.totalB}
+        </td>
+
+        <td>
+        $${comparisonData.totalDifference}
+        </td>
+    `;
+
+    totalsTable.appendChild(totalRow);
+
+    results.appendChild(totalsTable);
 
 }
