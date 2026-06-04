@@ -134,7 +134,7 @@ export function renderSummaryNavigation(container, currentView, onChange) {
     })
 }
 
-export function renderSummaryView(container, currentView, renderMonthly, renderWeekly, renderHistory, renderComparison) {
+export function renderSummaryView(container, currentView, renderMonthly, renderWeekly, renderHistory, renderComparison, renderYearly) {
     container.innerHTML = ""
 
     if(currentView === "monthly") {
@@ -191,6 +191,20 @@ export function renderSummaryView(container, currentView, renderMonthly, renderW
         const comparisonEl = container.querySelector("#comparison-summary");
 
         renderComparison(comparisonEl);
+
+        return;
+    }
+
+    if(currentView === "yearly") {
+
+        container.innerHTML = `
+            <div id="yearly-summary">
+            </div>
+        `;
+
+        const yearlyEl = container.querySelector("#yearly-summary");
+
+        renderYearly(yearlyEl);
 
         return;
     }
@@ -483,4 +497,149 @@ export function renderComparisonSummary(container, comparisonA, comparisonB, com
 
     results.appendChild(totalsTable);
 
+}
+
+export function renderYearlySummary(container,year, yearlyData, onChangeYear) {
+
+    container.innerHTML = `
+        <h2>
+        Yearly summary
+        </h2>
+
+        <div id="year-picker">
+
+        </div>
+
+        <section id="yearly-results">
+        
+        <p>
+        Select year
+        </p>
+
+        </section>
+    `;
+
+    const picker = container.querySelector("#year-picker");
+
+    renderMonthYearPicker(picker, 0, year, onChangeYear, false)
+
+    const results = container.querySelector("#yearly-results");
+
+    results.innerHTML = `
+        <p>
+        Yearly total:
+
+        $${yearlyData.yearlyTotal}
+        </p>
+
+        <p>
+        Highest Month:
+
+        ${getMonthName(yearlyData.highestMonth.month)}
+
+        ($${yearlyData.highestMonth.total})
+        </p>
+
+        <p>
+        Lowest Month:
+
+        ${getMonthName(yearlyData.lowestMonth.month)}
+
+        ($${yearlyData.lowestMonth.total})
+        </p>
+
+        <p>
+        Monthly Average: 
+
+        $${yearlyData.monthlyAverage}
+        </p>
+    `;
+
+    const categoriesBtn = document.createElement("button");
+
+    categoriesBtn.textContent = "▶ Categories";
+
+    const categories = document.createElement("div");
+
+    categories.style.display = "none";
+
+    Object.entries(yearlyData.yearlyCategories)
+    .forEach(([category,total])=>{
+
+        const row = document.createElement("p");
+
+        const percentage = (total / yearlyData.yearlyTotal * 100).toFixed(1);
+
+        row.textContent = `
+            ${category}
+
+            :
+
+            $${total}
+
+            (${percentage}%)
+        `;
+
+        categories.appendChild(row);
+    }
+);
+
+categoriesBtn.addEventListener("click", ()=>{
+
+    const open = categories.style.display === "block";
+
+    categories.style.display = open
+    ?
+    "none"
+    :
+    "block";
+
+    categoriesBtn.textContent = open
+    ?
+    "▶ Categories"
+    : 
+    "▼ Categories"
+}
+);
+
+results.append(categoriesBtn, categories);
+
+const monthlyTable = document.createElement("table");
+
+monthlyTable.innerHTML = `
+    <tr>
+    
+    <th>
+    Month
+    </th>
+
+    <th>
+    Total
+    </th>
+
+    </tr>
+`;
+
+yearlyData.monthlyTotals.forEach(item=>{
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>
+        
+        ${getMonthName(item.month)}
+        
+        </td>
+
+        <td>
+        
+        $${item.total}
+
+        </td>
+    `;
+
+    monthlyTable.appendChild(row);
+});
+
+results.appendChild(monthlyTable)
 }

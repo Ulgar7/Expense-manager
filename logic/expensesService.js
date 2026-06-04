@@ -255,3 +255,76 @@ export function getComparisonData(monthA, yearA, monthB, yearB) {
         totalA-totalB
     };
 }
+
+export function getYearlySummary(year) {
+    
+    const monthlyTotals = [];
+
+    
+    
+    for(let month=0; month<12; month++) {
+        
+        const total = getTotalPerMonth(month,year);
+        
+        monthlyTotals.push({month, total});
+    }
+    
+    const activeMonths = monthlyTotals.filter(month=> month.total>0);
+    
+    const yearlyTotal = monthlyTotals.reduce((sum,item)=>
+        sum+
+        item.total,
+        0
+        );
+
+        const highestMonth = monthlyTotals.reduce((highest,current)=>{
+
+            if(!highest || current.total>highest.total) {
+
+                return current;
+            }
+
+            return highest;
+        },
+        null
+        );
+
+        const lowestMonth = activeMonths.reduce((lowest,current)=> {
+
+            if(!lowest || current.total<lowest.total) {
+
+                return current;
+            }
+            return lowest;
+        },
+        null
+        );
+
+        const yearlyCategories = {}
+
+        for(let month=0; month<12; month++) {
+
+            const summary = getCategorySummary(month,year);
+
+            Object.entries(summary).forEach(([category,total])=>{
+
+                if(!yearlyCategories[category]) {
+
+                    yearlyCategories[category] = 0;
+                }
+
+                yearlyCategories[category] += total;
+            }
+        );
+        }
+
+        
+
+        const monthlyAverage = activeMonths.length === 0
+        ?
+        0
+        :
+        Math.round(yearlyTotal / activeMonths.length);
+
+        return{yearlyTotal, highestMonth, lowestMonth, monthlyTotals, yearlyCategories, monthlyAverage};
+}

@@ -1,6 +1,6 @@
 import { getMonthName } from "../utils/dates.js";
 
-export function renderMonthYearPicker(container, month, year, onChange) {
+export function renderMonthYearPicker(container, month, year, onChange, showMonth=true) {
 
     container.innerHTML = "";
 
@@ -55,5 +55,11 @@ export function renderMonthYearPicker(container, month, year, onChange) {
 
     yearSelect.addEventListener( "change", emit);
 
-    container.append(monthSelect,yearSelect);
+    
+
+    if(showMonth){
+        container.append(monthSelect,yearSelect);
+    }else {
+        container.append(yearSelect)
+    }
 }

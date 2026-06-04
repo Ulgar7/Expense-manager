@@ -1,7 +1,7 @@
 import { renderCalendar } from "./ui/calendar.js";
 import { renderAddForm, renderExpenses } from "./ui/render.js";
-import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getWeeklySummary, getTopCategory, getHighestExpense, getDailyAverage, getHighestWeek, getMonthlyHistory, getComparisonData } from "./logic/expensesService.js"
-import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary, renderHistorySummary, renderComparisonSummary } from "./ui/renderSummary.js";
+import { getExpensesPerDate, addExpense, removeExpense, getTotalPerDate, getTotalPerMonth, getCategorySummary, getWeeklySummary, getTopCategory, getHighestExpense, getDailyAverage, getHighestWeek, getMonthlyHistory, getComparisonData, getYearlySummary } from "./logic/expensesService.js"
+import { renderSummary, renderSummaryNavigation, renderSummaryView, renderWeeklySummary, renderHistorySummary, renderComparisonSummary, renderYearlySummary } from "./ui/renderSummary.js";
 import { renderCharts } from "./ui/charts.js";
 import { renderMonthYearPicker } from "./ui/monthYearPicker.js";
 
@@ -94,19 +94,20 @@ let comparisonB = {
     visibleYear
 }
 
+let yearlyYear = visibleYear;
+
+
 function refreshUI() {
 
-    const categorySummary = 
-        getCategorySummary(visibleMonth, visibleYear);
+    const yearlyData = getYearlySummary(yearlyYear);
+
+    const categorySummary = getCategorySummary(visibleMonth, visibleYear);
     
-    const topCategory = 
-        getTopCategory(visibleMonth, visibleYear);    
+    const topCategory = getTopCategory(visibleMonth, visibleYear);    
 
-    const highestExpense = 
-        getHighestExpense(visibleMonth, visibleYear);
+    const highestExpense = getHighestExpense(visibleMonth, visibleYear);
 
-    const dailyAverage =
-        getDailyAverage(visibleMonth, visibleYear);    
+    const dailyAverage = getDailyAverage(visibleMonth, visibleYear);    
 
     const highestWeek = getHighestWeek(visibleMonth, visibleYear);
 
@@ -209,6 +210,15 @@ function refreshUI() {
             refreshUI()
         }
     );
+    },
+
+    (container) => {
+        renderYearlySummary(container, yearlyYear, yearlyData, (newValue)=>{
+            
+            yearlyYear = newValue.year;
+
+            refreshUI()
+        });
     }
     )
 
