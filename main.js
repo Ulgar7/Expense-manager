@@ -96,6 +96,13 @@ let comparisonB = {
 
 let yearlyYear = visibleYear;
 
+let historyView = {
+
+    month: visibleMonth,
+
+    year: visibleYear
+}
+
 
 function refreshUI() {
 
@@ -111,7 +118,7 @@ function refreshUI() {
 
     const highestWeek = getHighestWeek(visibleMonth, visibleYear);
 
-    const history = getMonthlyHistory(visibleMonth, visibleYear);
+    const history = getMonthlyHistory(historyView.month, historyView.year)
 
     const comparisonData = getComparisonData(
 
@@ -195,7 +202,10 @@ function refreshUI() {
     },
 
     (container) => {
-        renderHistorySummary(container, history);
+        renderHistorySummary(container, history, historyView, (newValue)=>{
+            historyView = newValue;
+            refreshUI()
+        });
     },
     (container) => {
         renderComparisonSummary(container, comparisonA, comparisonB, comparisonData, (newValue)=>{

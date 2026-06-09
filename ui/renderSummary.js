@@ -286,12 +286,20 @@ export function renderWeeklySummary(container, weeklyData){
     });
 };
 
-export function renderHistorySummary(container, historyData) {
+export function renderHistorySummary(container, historyData, historyView, onChangeHistory) {
     container.innerHTML = `
         <h2>
         History
         </h2>
+
+        <div id="history-picker">
+        
+        </div>
     `;
+
+    const picker = container.querySelector("#history-picker");
+
+    renderMonthYearPicker(picker, historyView.month, historyView.year, onChangeHistory)
 
     Object.entries(historyData) .reverse()
     .forEach(([date, data])=>{
