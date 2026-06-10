@@ -1,6 +1,8 @@
 import { expenses } from "../data/expenses.js";
-import { expenseTypes } from "../data/expensesType.js";
+// import { expenseTypes } from "../data/categories.js";
+import { knownExpenses } from "../data/knownExpenses.js";
 import { getWeeksRanges } from "../utils/dates.js";
+
 
 export function getExpensesPerDate(date) {
     return expenses.filter(e => e.date === date);
@@ -8,7 +10,7 @@ export function getExpensesPerDate(date) {
 
 
 export function addExpense({type, amount, date}) {
-    const expenseInfo = expenseTypes[type]
+    const expenseInfo = knownExpenses[type]
     const newExpense = {
         id: crypto.randomUUID(),
         type,
